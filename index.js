@@ -14,7 +14,13 @@ const port = 2000;
 
 //* middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+      origin: "https://e-notebook-frontend-main.vercel.app", // Allow only frontend requests
+      methods: "GET,POST,PUT,DELETE",
+      credentials: true,
+    })
+  );
 
 // Routes
 app.get('/', (req, res) => {
