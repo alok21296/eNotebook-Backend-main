@@ -71,7 +71,8 @@ const corsOptions = {
         "https://e-notebook-frontend-main-chvf6ac4z-alok21296s-projects.vercel.app"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "auth-token"],
+    credentials: true 
 };
 app.use(cors(corsOptions));
 app.use(express.json());
