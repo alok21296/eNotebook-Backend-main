@@ -65,13 +65,17 @@ const MONGO_URI = process.env.MONGO_URI;
 app.use(express.json());
 
 // ✅ Fix CORS Error
-app.use(cors({
-    origin: "https://e-notebook-frontend-main.vercel.app", // ✅ Allow frontend
-    methods: "GET, POST, PUT, DELETE, OPTIONS",
-    allowedHeaders: "Content-Type, Authorization",
-    credentials: true
-}));
-app.options('*', cors()); // ✅ Handle preflight requests
+const corsOptions = {
+    origin: [
+        "https://e-notebook-frontend-main.vercel.app", 
+        "https://e-notebook-frontend-main-chvf6ac4z-alok21296s-projects.vercel.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+};
+app.use(cors(corsOptions));
+app.use(express.json());
+// app.options('*', cors()); // ✅ Handle preflight requests
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI).then(() => {
