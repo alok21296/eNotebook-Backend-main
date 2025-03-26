@@ -45,38 +45,50 @@
 // })
 
 
-import connectToMongo from "./database/db.js";
 import express from "express";
-import cors from 'cors';
-import auth from './routes/auth.js';
-import notes from './routes/notes.js';
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
 
-// database connection to backend
-connectToMongo();
+// Import Routes
+import authRoutes from "./routes/auth.js";
+import notesRoutes from "./routes/notes.js";
 
-// create express app
+// Load environment variables
+dotenv.config();
+
 const app = express();
-const port = process.env.PORT || 2000;  // ✅ Use dynamic port for Vercel
+const PORT = process.env.PORT || 2000;
+const MONGO_URI = process.env.MONGO_URI;
 
-//* middleware
+// Middleware
 app.use(express.json());
+
+// ✅ Fix CORS Error
 app.use(cors({
-    origin: "https://e-notebook-frontend-main-git-main-alok21296s-projects.vercel.app", 
+    origin: "https://e-notebook-frontend-main.vercel.app", // ✅ Allow frontend
     methods: "GET, POST, PUT, DELETE, OPTIONS",
     allowedHeaders: "Content-Type, Authorization",
     credentials: true
 }));
-app.options('*', cors());  // ✅ Allow preflight requests
+app.options('*', cors()); // ✅ Handle preflight requests
+
+// Connect to MongoDB
+mongoose.connect(MONGO_URI).then(() => {
+    console.log("MongoDB Connected");
+}).catch((error) => console.log("MongoDB Connection Error:", error));
+
 
 // Routes
-app.get('/', (req, res) => {
-    res.json("eNotebook backend API");
+app.use("/api/auth", authRoutes);
+app.use("/api/notes", notesRoutes);
+
+// Root Endpoint
+app.get("/", (req, res) => {
+    res.send("Welcome to eNotebook API");
 });
 
-//* Available routes
-app.use('/api/auth', auth);
-app.use('/api/notes', notes);
-
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+// Start Server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
