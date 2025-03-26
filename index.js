@@ -75,7 +75,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.use(express.json());
-// app.options('*', cors()); // ✅ Handle preflight requests
+app.options('*', cors()); // ✅ Handle preflight requests
 
 // Connect to MongoDB
 mongoose.connect(MONGO_URI).then(() => {
